@@ -1,0 +1,20 @@
+# Local production-like run: docker compose up --build  →  http://localhost:8787
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: adpilot
+      POSTGRES_PASSWORD: adpilot
+      POSTGRES_DB: adpilot
+    volumes: [pgdata:/var/lib/postgresql/data]
+    ports: ['5432:5432']
+  app:
+    build: .
+    depends_on: [db]
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgres://adpilot:adpilot@db:5432/adpilot
+      APP_URL: http://localhost:8787
+    ports: ['8787:8787']
+volumes:
+  pgdata:
